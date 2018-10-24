@@ -32,6 +32,10 @@ public class RetrofitHelper {
                 .build();
     }
 
+    public static BlogApi getBlogApi(){
+       return getRetrofit().create(BlogApi.class);
+    }
+
     private static void initOkhttpClient() {
         if (okHttpClient == null) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();

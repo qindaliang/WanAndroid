@@ -1,14 +1,19 @@
 package com.qin.wanandroid.base;
 
 import android.app.Activity;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.qin.wanandroid.R;
 
@@ -22,11 +27,13 @@ import butterknife.Unbinder;
  * Create by qindl
  * on 2018/10/19
  */
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment<T> extends Fragment {
 
+    public static final String TAG = "TAG";
     private Unbinder mBind;
     private Snackbar mSnackbar;
-public Activity mActivity;
+    public FragmentActivity mActivity;
+
     public abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
     public abstract void initData();
@@ -40,7 +47,8 @@ public Activity mActivity;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return initView(inflater, container, savedInstanceState);
+        View view = initView(inflater, container, savedInstanceState);
+        return view;
     }
 
 
@@ -54,9 +62,9 @@ public Activity mActivity;
         }
     }
 
-    public void showSnackBar(View view,String str){
-        mSnackbar = Snackbar.make(view,str,Snackbar.LENGTH_SHORT);
-        mSnackbar.getView().setBackgroundColor(getResources().getColor(R.color.snack_default,null));
+    public void showSnackBar(View view, String str) {
+        mSnackbar = Snackbar.make(view, str, Snackbar.LENGTH_SHORT);
+        mSnackbar.getView().setBackgroundColor(mActivity.getResources().getColor(R.color.snack_default));
         mSnackbar.show();
     }
 
@@ -72,7 +80,7 @@ public Activity mActivity;
     }
 
     @Subscribe
-    public void onEventMainThread(String flags) {
+    public void onEventMainThread(T flags) {
 
     }
 }

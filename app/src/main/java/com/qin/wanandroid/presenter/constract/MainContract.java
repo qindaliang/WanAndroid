@@ -10,11 +10,10 @@ public interface MainContract {
 
     interface Presenter extends BaseContract.BasePresenter<View> {
 
-        void switchView();
+        void switchView(int id);
     }
 
     interface View extends BaseContract.BaseView {
-
 
         void transformOne();
 

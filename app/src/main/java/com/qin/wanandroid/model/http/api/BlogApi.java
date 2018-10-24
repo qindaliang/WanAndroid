@@ -1,6 +1,17 @@
 package com.qin.wanandroid.model.http.api;
 
+import com.qin.wanandroid.model.bean.Blog.Chapters;
+import com.qin.wanandroid.model.bean.Blog.HistoryChapters;
+import com.qin.wanandroid.model.bean.home.HomeBanner;
+import com.qin.wanandroid.model.bean.home.HomeMore;
+import com.qin.wanandroid.model.bean.home.SecondBanner;
+import com.qin.wanandroid.model.http.response.BaseBlogResponse;
+
+import java.util.List;
+
 import io.reactivex.Flowable;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 /**
  * Create by qindl
@@ -8,7 +19,23 @@ import io.reactivex.Flowable;
  */
 public interface BlogApi {
 
-    String HOST = "";
+    String HOST = "http://wanandroid.com/";
+  //  String HOST = "http://wanandroid.com/wxarticle/chapters/json";
 
-    Flowable<String> getGuoLinBlog();
+
+
+    @GET("wxarticle/chapters/json")
+    Flowable<BaseBlogResponse<List<Chapters>>> getChapters();
+
+    @GET("wxarticle/list/{id}/{page}/json")
+    Flowable<BaseBlogResponse<HistoryChapters.DataBean>> getHistoryChapters(@Path("id") int id,@Path("page") int page);
+
+    @GET("banner/json")
+    Flowable<HomeBanner> getHomeBanner();
+
+    @GET("article/listproject/0/json")
+    Flowable<SecondBanner> getSecondBanner();
+
+    @GET("article/list/{id}/json")
+    Flowable<HomeMore> getHomeMoreList(@Path("id")int id);
 }

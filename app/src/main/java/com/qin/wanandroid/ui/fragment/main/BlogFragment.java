@@ -1,4 +1,4 @@
-package com.qin.wanandroid.ui.fragment.blog;
+package com.qin.wanandroid.ui.fragment.main;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,42 +6,41 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.flyco.tablayout.SlidingTabLayout;
-import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.qin.wanandroid.R;
 import com.qin.wanandroid.base.MvpBaseFragment;
+import com.qin.wanandroid.model.bean.Blog.Chapters;
+import com.qin.wanandroid.model.http.response.BaseBlogResponse;
+import com.qin.wanandroid.presenter.BaseBlogPresenter;
 import com.qin.wanandroid.presenter.constract.BaseBlogContract;
+import com.qin.wanandroid.ui.fragment.blog.CommonBlogFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
-import butterknife.Unbinder;
 
 /**
  * Create by qindl
  * on 2018/10/19
  */
-public class BaseBlogFragment extends MvpBaseFragment<BaseBlogContract.Presenter> implements BaseBlogContract.View{
+public class BlogFragment extends MvpBaseFragment<BaseBlogContract.Presenter> implements BaseBlogContract.View {
 
-    @BindView(R.id.iv_blog_category)
-    ImageView ivBlogCategory;
     @BindView(R.id.tl_blog)
     SlidingTabLayout tlBlog;
     @BindView(R.id.iv_blog_search)
     ImageView ivBlogSearch;
     @BindView(R.id.vp_blog)
     ViewPager vpBlog;
-    Unbinder unbinder;
-
     private View mBlogView;
-    private ArrayList<CommonBlogFragment> mFragments = new ArrayList<>();
-    private String[] mTitles;
+    private ArrayList<Fragment> mFragments = new ArrayList<>();
+    private List<String> mTitles;
 
     @Override
     public void showMsg(String msg) {
@@ -51,21 +50,37 @@ public class BaseBlogFragment extends MvpBaseFragment<BaseBlogContract.Presenter
     @Override
     public View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mBlogView == null) {
-            mBlogView = inflater.inflate(R.layout.fragment_base_blog, null);
+            mBlogView = inflater.inflate(R.layout.fragment_blog_base, null);
         }
-        return mBlogView;
+       return mBlogView;
     }
 
     @Override
     public void initData() {
-        mTitles = getResources().getStringArray(R.array.blog_tab);
-        HongXiangFragment fragment = new HongXiangFragment();
-        for(int i = 0; i < mTitles.length ; i++){
-            mFragments.add(new HongXiangFragment());
+        presenter = new BaseBlogPresenter(this);
+        presenter.loadTab();
+    }
+
+    @Override
+    public void showTab(BaseBlogResponse<List<Chapters>> blogResponse) {
+        if (blogResponse==null){
+            return;
         }
-        vpBlog.setAdapter(new MyFragmentAdapter(getFragmentManager()));
+        List<Chapters> chapters = blogResponse.getData();
+        int size = chapters.size();
+        mTitles = new ArrayList<>(size);
+        for(int i = 0 ; i < size ; i++){
+            mTitles.add(chapters.get(i).getName());
+            CommonBlogFragment fragment = new CommonBlogFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("id",chapters.get(i).getId());
+            fragment.setArguments(bundle);
+            mFragments.add(fragment);
+            Log.i(TAG, "showTab: "+chapters.get(i).getName());
+        }
+        vpBlog.setOffscreenPageLimit(mTitles.size());
+        vpBlog.setAdapter(new MyFragmentAdapter(getChildFragmentManager()));
         tlBlog.setViewPager(vpBlog);
-      
     }
 
     class MyFragmentAdapter extends FragmentPagerAdapter {
@@ -82,7 +97,7 @@ public class BaseBlogFragment extends MvpBaseFragment<BaseBlogContract.Presenter
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
-            return mTitles[position];
+            return mTitles.get(position);
         }
 
         @Override

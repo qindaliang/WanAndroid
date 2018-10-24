@@ -4,7 +4,9 @@ import com.qin.wanandroid.model.http.exception.ApiExcetion;
 import com.qin.wanandroid.model.http.exception.ExceptionHandle;
 import com.qin.wanandroid.model.http.exception.ServerException;
 import com.qin.wanandroid.model.http.response.BaseBlogResponse;
+
 import org.reactivestreams.Publisher;
+
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
@@ -43,11 +45,10 @@ public class RxUitl {
                 return upstream.flatMap(new Function<BaseBlogResponse<T>, Publisher<T>>() {
                     @Override
                     public Publisher<T> apply(BaseBlogResponse<T> tBaseBlogResponse) throws Exception {
-                        if (tBaseBlogResponse.getCode() == 200) {
+                        if (tBaseBlogResponse.getErrorCode() == 0)
                             return createData(tBaseBlogResponse.getData());
-                        } else {
-                            return Flowable.error(new ApiExcetion("服务器返回错误" + tBaseBlogResponse.getCode()));
-                        }
+                        else
+                            return Flowable.error(new ServerException(tBaseBlogResponse.getErrorMsg()));
                     }
                 });
             }
@@ -84,11 +85,10 @@ public class RxUitl {
     public static class ServerResultFunc<T> implements Function<BaseBlogResponse<T>, T> {
         @Override
         public T apply(BaseBlogResponse<T> tBaseBlogResponse) throws Exception {
-            if (tBaseBlogResponse.getCode() == 200) {
+            if (tBaseBlogResponse.getErrorCode() == 0)
                 return tBaseBlogResponse.getData();
-            } else {
-                throw new ServerException(tBaseBlogResponse.getMsg());
-            }
+            else
+                return null;
         }
     }
 

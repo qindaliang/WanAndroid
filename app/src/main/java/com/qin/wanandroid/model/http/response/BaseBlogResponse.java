@@ -5,23 +5,6 @@ package com.qin.wanandroid.model.http.response;
  * on 2018/10/20
  */
 public class BaseBlogResponse<T> {
-    private String msg;
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
 
     public T getData() {
         return data;
@@ -31,6 +14,24 @@ public class BaseBlogResponse<T> {
         this.data = data;
     }
 
-    private int code;
     private T data;
+
+    private int errorCode;
+    private String errorMsg;
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
 }

@@ -5,9 +5,38 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.MainActivity">
 
+    <RadioGroup
+        android:id="@+id/rbg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_chapter"
+            style="@style/rb_common"
+            android:drawableTop="@mipmap/all_category_img"
+            android:text="文章" />
+
+        <RadioButton
+            android:id="@+id/rb_home"
+            style="@style/rb_common"
+            android:drawableTop="@mipmap/all_category_img"
+            android:text="主页" />
+
+        <RadioButton
+            android:id="@+id/rb_e"
+            style="@style/rb_common"
+            android:drawableTop="@mipmap/all_category_img"
+            android:text="文章" />
+    </RadioGroup>
+
     <FrameLayout
         android:id="@+id/fl_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/rbg" />
 
 </RelativeLayout>

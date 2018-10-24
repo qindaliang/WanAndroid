@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WanAndroid</string>
+    <string name="pageview">浏览量:</string>
+    <string name="quit_system">再按一次退出程序</string>
 </resources>
