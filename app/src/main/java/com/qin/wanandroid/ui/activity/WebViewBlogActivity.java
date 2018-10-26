@@ -1,37 +1,67 @@
 package com.qin.wanandroid.ui.activity;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.qin.wanandroid.R;
 import com.qin.wanandroid.base.BaseActivity;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class WebViewBlogActivity extends BaseActivity {
     @BindView(R.id.webview)
     WebView webView;
     @BindView(R.id.progressbar)
     ProgressBar progressBar;
+    @BindView(R.id.iv_toolbar_delete)
+    ImageView ivToolbarDelete;
+    @BindView(R.id.iv_toolbar_share)
+    ImageView ivToolbarShare;
+    @BindView(R.id.ll_common_edit)
+    LinearLayout llCommonEdit;
+    @BindView(R.id.et_common)
+    EditText etCommon;
+    @BindView(R.id.ll_common_message)
+    LinearLayout llCommonMessage;
+    private String mUrl;
 
     @Override
     public void initData() {
-        String url = getIntent().getStringExtra("url");
-        webView.loadUrl(url);
+        initToolBar(R.id.toolbar_common);
+        mUrl = getIntent().getStringExtra("url");
+        initWebView();
+        webView.loadUrl(mUrl);
+        mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (webView.canGoBack()) {
+                    webView.goBack();
+                } else {
+                    finish();
+                }
+            }
+        });
+    }
+
+    private void initWebView() {
         webView.addJavascriptInterface(this, "android");
         webView.setWebChromeClient(webChromeClient);
         webView.setWebViewClient(webViewClient);
@@ -58,6 +88,20 @@ public class WebViewBlogActivity extends BaseActivity {
             progressBar.setVisibility(View.VISIBLE);
         }
 
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            if (!request.getUrl().getPath().startsWith("http") || !request.getUrl().getPath().startsWith("https")) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Log.e("TAG", "没有安装-哈哈哈" + request.getUrl());
+                }
+                return true;
+            }
+            return super.shouldOverrideUrlLoading(view, request);
+        }
     };
 
     private WebChromeClient webChromeClient = new WebChromeClient() {
@@ -79,7 +123,7 @@ public class WebViewBlogActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.i("ansen", "是否有上一个页面:" + webView.canGoBack());
+        Log.i("TAG", "是否有上一个页面:" + webView.canGoBack());
         if (webView.canGoBack() && keyCode == KeyEvent.KEYCODE_BACK) {
             webView.goBack();
             return true;
@@ -99,5 +143,20 @@ public class WebViewBlogActivity extends BaseActivity {
             webView = null;
         }
         super.onDestroy();
+    }
+
+    @OnClick({R.id.iv_toolbar_delete, R.id.iv_toolbar_share, R.id.ll_common_edit, R.id.ll_common_message})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.iv_toolbar_delete:
+                break;
+            case R.id.iv_toolbar_share:
+                share(mUrl);
+                break;
+            case R.id.ll_common_edit:
+                break;
+            case R.id.ll_common_message:
+                break;
+        }
     }
 }

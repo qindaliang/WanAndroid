@@ -2,21 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <RelativeLayout
         android:id="@+id/rl_home_more"
-        android:background="@color/white"
-        android:padding="15dp"
-        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="完整项目"
-            android:textColor="@color/black_default"
+            android:textColor="@color/text_black"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -28,13 +29,13 @@
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:layout_margin="10dp"
         android:id="@+id/rlv_home_newproject"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp" />
 
     <View
-        android:layout_marginTop="5dp"
-        style="@style/view_line" />
+        style="@style/view_line_match"
+        android:layout_margin="5dp" />
 
 </LinearLayout>

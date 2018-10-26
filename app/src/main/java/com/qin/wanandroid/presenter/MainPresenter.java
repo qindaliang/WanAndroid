@@ -24,7 +24,7 @@ public class MainPresenter extends RxPresenter<MainContract.View> implements Mai
             case R.id.rb_home:
                 view.transformTwo();
                 break;
-            case R.id.rb_e:
+            case R.id.rb_system:
                 view.transformThree();
                 break;
             default:

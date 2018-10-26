@@ -3,6 +3,7 @@ package com.qin.wanandroid.presenter.constract;
 import com.qin.wanandroid.base.BaseContract;
 import com.qin.wanandroid.model.bean.home.HomeBanner;
 import com.qin.wanandroid.model.bean.home.HomeMore;
+import com.qin.wanandroid.model.bean.home.ProjectCategory;
 import com.qin.wanandroid.model.bean.home.SecondBanner;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface HomePageContract {
     interface presenter extends BaseContract.BasePresenter<view>{
         void loadRefreshData(int id);
-        void loadMoreData();
+        void loadMoreData(int id);
 
     }
     interface view extends BaseContract.BaseView{
@@ -23,5 +24,6 @@ public interface HomePageContract {
         void showLoadMoreData(HomeMore homeMore);
         void showRefreshData(SecondBanner dataBean);
         void stopShowData(boolean isRefreh);
+        void showRefreshCategoryData(ProjectCategory category);
     }
 }

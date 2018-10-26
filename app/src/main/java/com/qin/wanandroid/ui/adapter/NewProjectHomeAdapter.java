@@ -47,6 +47,7 @@ public class NewProjectHomeAdapter extends RecyclerView.Adapter implements View.
         holder.name.setText(bean.getChapterName());
         holder.time.setText(bean.getNiceDate());
         ImageLoader.load(mContext,bean.getEnvelopePic() ,holder.desc_pic);
+        ImageLoader.load(mContext,bean.getEnvelopePic() ,holder.author_pic);
         holder.desc_pic.setOnClickListener(this);
     }
 

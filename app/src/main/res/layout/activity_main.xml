@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.activity.MainActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@id/rbg"
+        android:layout_weight="1" />
 
     <RadioGroup
         android:id="@+id/rbg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:padding="4dp"
         android:background="@android:color/white"
         android:gravity="center"
         android:orientation="horizontal">
@@ -17,26 +27,30 @@
         <RadioButton
             android:id="@+id/rb_chapter"
             style="@style/rb_common"
-            android:drawableTop="@mipmap/all_category_img"
-            android:text="文章" />
+            android:textColor="@color/text_black"
+            android:drawablePadding="2dp"
+            android:drawableTop="@drawable/ic_main_chapter"
+            android:text="文章"
+            android:textSize="11sp" />
 
         <RadioButton
             android:id="@+id/rb_home"
             style="@style/rb_common"
-            android:drawableTop="@mipmap/all_category_img"
-            android:text="主页" />
+            android:drawablePadding="2dp"
+            android:checked="true"
+            android:drawableTop="@drawable/ic_main_home"
+            android:text="主页"
+            android:textColor="@color/text_home_bottom"
+            android:textSize="11sp" />
 
         <RadioButton
-            android:id="@+id/rb_e"
+            android:id="@+id/rb_system"
             style="@style/rb_common"
-            android:drawableTop="@mipmap/all_category_img"
-            android:text="文章" />
+            android:drawablePadding="2dp"
+            android:textColor="@color/text_black"
+            android:drawableTop="@drawable/ic_main_system"
+            android:text="分类"
+            android:textSize="11sp" />
     </RadioGroup>
 
-    <FrameLayout
-        android:id="@+id/fl_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/rbg" />
-
-</RelativeLayout>
+</LinearLayout>

@@ -29,6 +29,6 @@
         android:src="@mipmap/guide_search" />
 
     <View
-        style="@style/view_line"
+        style="@style/view_line_match"
         android:layout_alignParentBottom="true" />
 </RelativeLayout>

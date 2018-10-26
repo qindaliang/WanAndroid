@@ -13,12 +13,12 @@ import com.qin.wanandroid.R;
  */
 public class NewProjectViewHolder extends RecyclerView.ViewHolder {
 
-    public  RecyclerView recycleView;
+    public  RecyclerView recyclerView;
     public RelativeLayout rl_more;
 
     public NewProjectViewHolder(@NonNull View itemView) {
         super(itemView);
         rl_more = itemView.findViewById(R.id.rl_home_more);
-        recycleView = itemView.findViewById(R.id.rlv_home_newproject);
+        recyclerView = itemView.findViewById(R.id.rlv_home_newproject);
     }
 }

@@ -3,6 +3,7 @@ package com.qin.wanandroid.ui.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.qin.wanandroid.R;
 import com.qin.wanandroid.application.GlideApp;
@@ -17,11 +19,14 @@ import com.qin.wanandroid.listener.OnItemClickListener;
 import com.qin.wanandroid.model.ImageLoader;
 import com.qin.wanandroid.model.bean.home.HomeBanner;
 import com.qin.wanandroid.model.bean.home.HomeMore;
+import com.qin.wanandroid.model.bean.home.ProjectCategory;
 import com.qin.wanandroid.model.bean.home.SecondBanner;
 import com.qin.wanandroid.ui.viewhodler.EmptyHolder;
 import com.qin.wanandroid.ui.viewhodler.HomeBannerViewHolder;
 import com.qin.wanandroid.ui.viewhodler.HomePageListHolder;
 import com.qin.wanandroid.ui.viewhodler.NewProjectViewHolder;
+import com.qin.wanandroid.ui.viewhodler.ProjectCategoryViewHolder;
+import com.qin.wanandroid.ui.viewhodler.QualityChapterViewHolder;
 import com.qin.wanandroid.utils.StringUtil;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
@@ -39,14 +44,17 @@ public class CommonHomeAdapter extends RecyclerView.Adapter implements View.OnCl
     private static final int HOME_BANNER = 0;
     private static final int NEW_PROJECT = 1;
     private static final int CATEGORY = 2;
-    private static final int MORE = 3;
+    private static final int QUALITY_CHAPTER = 3;
+    private static final int MORE = 4;
     private List<String> images = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
     private List<HomeBanner.DataBean> bannerDatas = new ArrayList<>();
     private List<SecondBanner.DataBean.DatasBean> secondBanners = new ArrayList<>();
     private List<HomeMore.DataBean.DatasBean> homeMores = new ArrayList<>();
-    private List<String> totalDatas = new ArrayList<>();
+    private List<ProjectCategory.DataBean> categorys = new ArrayList<>();
+    private List<HomeMore.DataBean.DatasBean> totalDatas = new ArrayList<>();
     private OnItemHomeMoreClickListener mOnItemClickListener;
+    private boolean scrolling;
 
     public CommonHomeAdapter(Context context) {
         mContext = context;
@@ -70,18 +78,17 @@ public class CommonHomeAdapter extends RecyclerView.Adapter implements View.OnCl
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        Log.i("TAG", "onCreateViewHolder: " + viewType);
         if (viewType == HOME_BANNER) {
             return new HomeBannerViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_home_banner, viewGroup, false));
         } else if (viewType == NEW_PROJECT) {
             return new NewProjectViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_home_new_project, viewGroup, false));
-        }
-        else if (viewType == CATEGORY) {
-            return new HomeBannerViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_home_banner, viewGroup, false));
-        }
-        else if (viewType == MORE) {
+        } else if (viewType == CATEGORY) {
+            return new ProjectCategoryViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_home_project_category, viewGroup, false));
+        } else if (viewType == QUALITY_CHAPTER) {
+            return new QualityChapterViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_home_quality_chapter, viewGroup, false));
+        } else if (viewType == MORE) {
             return new HomePageListHolder(LayoutInflater.from(mContext).inflate(R.layout.item_home_more_list, viewGroup, false));
-        }else {
+        } else {
             return new EmptyHolder(LayoutInflater.from(mContext).inflate(R.layout.empty, viewGroup, false));
         }
     }
@@ -92,9 +99,33 @@ public class CommonHomeAdapter extends RecyclerView.Adapter implements View.OnCl
             initHomePageBanner((HomeBannerViewHolder) viewHolder);
         } else if (viewHolder instanceof NewProjectViewHolder) {
             initNewProjectViewHodler((NewProjectViewHolder) viewHolder);
+        } else if (viewHolder instanceof ProjectCategoryViewHolder) {
+            initProjectCategoryViewHodler((ProjectCategoryViewHolder) viewHolder);
+        } else if (viewHolder instanceof QualityChapterViewHolder) {
+            initQualityChapterViewHolder((QualityChapterViewHolder) viewHolder);
         } else if (viewHolder instanceof HomePageListHolder) {
             initHomePageHolder((HomePageListHolder) viewHolder, i);
         }
+    }
+
+    private void initQualityChapterViewHolder(QualityChapterViewHolder holder) {
+        LinearLayoutManager manager = new LinearLayoutManager(mContext);
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        holder.recyclerView.setLayoutManager(manager);
+        holder.recyclerView.setItemAnimator(new DefaultItemAnimator());
+        QualityChapterAdapter adapter = new QualityChapterAdapter(mContext,images,titles,bannerDatas);
+        holder.recyclerView.setAdapter(adapter);
+
+    }
+
+    private void initProjectCategoryViewHodler(ProjectCategoryViewHolder holder) {
+        LinearLayoutManager manager = new LinearLayoutManager(mContext);
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        holder.recycleView.setLayoutManager(manager);
+        holder.recycleView.setItemAnimator(new DefaultItemAnimator());
+        ProjectCategoryDetailAdapter adapter = new ProjectCategoryDetailAdapter(mContext, categorys, images, titles);
+        holder.recycleView.setAdapter(adapter);
+
     }
 
     private void initHomePageHolder(@NonNull HomePageListHolder holder, int postion) {
@@ -110,9 +141,11 @@ public class CommonHomeAdapter extends RecyclerView.Adapter implements View.OnCl
                 holder.desc_pic.setVisibility(View.GONE);
                 ImageLoader.load(mContext, mContext.getResources().getDrawable(R.mipmap.all_category_img), holder.head_pic);
             } else {
-                holder.desc_pic.setVisibility(View.VISIBLE);
-                ImageLoader.load(mContext, bean.getEnvelopePic(), holder.desc_pic);
-                ImageLoader.load(mContext, bean.getEnvelopePic(), holder.head_pic);
+                if (!scrolling) {
+                    ImageLoader.load(mContext, bean.getEnvelopePic(), holder.desc_pic);
+                    ImageLoader.load(mContext, bean.getEnvelopePic(), holder.head_pic);
+                    holder.desc_pic.setVisibility(View.VISIBLE);
+                }
             }
 
             if ("".equals(desc) && "".equals(envelopePic)) {
@@ -124,8 +157,8 @@ public class CommonHomeAdapter extends RecyclerView.Adapter implements View.OnCl
             holder.title.setText(StringUtil.replaceBlank(bean.getTitle()));
             holder.head_pic.setTag(postion);
             holder.desc_pic.setTag(postion);
-            holder.desc_pic.setOnClickListener(this);
-            holder.ll_author.setOnClickListener(this);
+//            holder.desc_pic.setOnClickListener(this);
+//            holder.ll_author.setOnClickListener(this);
         }
     }
 
@@ -133,11 +166,12 @@ public class CommonHomeAdapter extends RecyclerView.Adapter implements View.OnCl
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         manager.setReverseLayout(false);
-        holder.recycleView.setLayoutManager(manager);
-        holder.recycleView.addItemDecoration(new SpacesItemDecoration(30));
-        holder.recycleView.setItemAnimator(new DefaultItemAnimator());
+        holder.recyclerView.setLayoutManager(manager);
+        //解决每次复用重绘item间距，内部View设置
+        //   holder.recyclerView.addItemDecoration(new SpacesItemDecoration(LinearLayoutManager.HORIZONTAL, 10));
+        holder.recyclerView.setItemAnimator(new DefaultItemAnimator());
         NewProjectHomeAdapter adapter = new NewProjectHomeAdapter(mContext, secondBanners);
-        holder.recycleView.setAdapter(adapter);
+        holder.recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onClick(String s) {
@@ -169,11 +203,11 @@ public class CommonHomeAdapter extends RecyclerView.Adapter implements View.OnCl
             return HOME_BANNER;
         } else if (position == 1) {
             return NEW_PROJECT;
-        }
-//        else if (position == 2) {
-//            return CATEGORY;
-//        }
-        else if (position >= 2) {
+        } else if (position == 2) {
+            return CATEGORY;
+        } else if (position == 3) {
+            return QUALITY_CHAPTER;
+        } else if (position >= 4) {
             return MORE;
         }
         return super.getItemViewType(position);
@@ -181,7 +215,11 @@ public class CommonHomeAdapter extends RecyclerView.Adapter implements View.OnCl
 
     @Override
     public int getItemCount() {
-        return homeMores.size() + 1;
+        return homeMores.size() - 4;
+    }
+
+    public void setScrolling(boolean scroll) {
+        this.scrolling = scroll;
     }
 
     public interface OnItemHomeMoreClickListener {
@@ -199,7 +237,6 @@ public class CommonHomeAdapter extends RecyclerView.Adapter implements View.OnCl
             for (int i = 0; i < dataBean.size(); i++) {
                 titles.add(dataBean.get(i).getTitle());
                 images.add(dataBean.get(i).getImagePath());
-                //    Log.i("TAG", "setRefreshData: "+dataBean.get(i).getImagePath());
             }
             notifyItemRangeChanged(0, 1);
         }
@@ -213,19 +250,26 @@ public class CommonHomeAdapter extends RecyclerView.Adapter implements View.OnCl
         }
     }
 
-    public void setRefreshDataMore(List<HomeMore.DataBean.DatasBean> dataBean) {
+    public void setRefreshCategoryData(List<ProjectCategory.DataBean> dataBean) {
         if (dataBean != null) {
-            //    homeMores.clear();
-            homeMores.addAll(dataBean);
-//            notifyItemRangeChanged(0, homeMores.size());
-            notifyDataSetChanged();
+            categorys.clear();
+            categorys.addAll(dataBean);
+            notifyItemRangeChanged(2, 3);
         }
     }
 
-    public void setLoadMoreData(List<String> dnis) {
+    public void setRefreshDataMore(List<HomeMore.DataBean.DatasBean> dataBean) {
+        if (dataBean != null) {
+            homeMores.clear();
+            homeMores.addAll(dataBean);
+            notifyItemRangeChanged(3, homeMores.size());
+        }
+    }
+
+    public void setLoadMoreData(List<HomeMore.DataBean.DatasBean> datasBean) {
         int count = getItemCount();
-        totalDatas.addAll(dnis);
-        for (int i = count; i < totalDatas.size(); i++) {
+        homeMores.addAll(datasBean);
+        for (int i = count; i < homeMores.size(); i++) {
             notifyItemInserted(i);
         }
     }

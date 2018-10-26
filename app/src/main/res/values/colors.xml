@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#6bdb81</color>
     <color name="colorAccent">#FF4081</color>
     <color name="snack_default">#1a7fffff</color>
     <color name="line_color">#DDDDDD</color>
     <color name="transcant">#00FFFFFF</color>
     <color name="recycleview_gray">#BBB</color>
     <color name="shadow_gray">#DDDDDD</color>
+    <color name="white_1">#fcfdfc</color>
     <color name="shadow_white">#EFEFEF</color>
-    <color name="glide_default">#999</color>
-    <color name="black_default">#222222</color>
+    <color name="default_gray">#999</color>
+    <color name="text_black">#222222</color>
     <color name="white">#FFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="blue">#0091ff</color>
     <color name="text_red">#88FF0000</color>
+    <color name="text_home_bottom">#f74a2a</color>
 </resources>

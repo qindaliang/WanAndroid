@@ -2,8 +2,10 @@ package com.qin.wanandroid.model.http.api;
 
 import com.qin.wanandroid.model.bean.Blog.Chapters;
 import com.qin.wanandroid.model.bean.Blog.HistoryChapters;
+import com.qin.wanandroid.model.bean.category.Category;
 import com.qin.wanandroid.model.bean.home.HomeBanner;
 import com.qin.wanandroid.model.bean.home.HomeMore;
+import com.qin.wanandroid.model.bean.home.ProjectCategory;
 import com.qin.wanandroid.model.bean.home.SecondBanner;
 import com.qin.wanandroid.model.http.response.BaseBlogResponse;
 
@@ -33,9 +35,15 @@ public interface BlogApi {
     @GET("banner/json")
     Flowable<HomeBanner> getHomeBanner();
 
-    @GET("article/listproject/0/json")
-    Flowable<SecondBanner> getSecondBanner();
+    @GET("article/listproject/{id}/json")
+    Flowable<SecondBanner> getSecondBanner(@Path("id") int id);
 
     @GET("article/list/{id}/json")
     Flowable<HomeMore> getHomeMoreList(@Path("id")int id);
+
+    @GET("project/tree/json")
+    Flowable<ProjectCategory> getProjectCategory();
+
+    @GET("tree/json")
+    Flowable<Category> getCategory();
 }

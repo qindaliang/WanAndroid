@@ -19,6 +19,7 @@ public class NewProjectDetailViewHolder extends RecyclerView.ViewHolder {
     public TextView time;
     public TextView name;
     public ImageView desc_pic;
+    public ImageView author_pic;
 
     public NewProjectDetailViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -27,6 +28,7 @@ public class NewProjectDetailViewHolder extends RecyclerView.ViewHolder {
         time = itemView.findViewById(R.id.tv_item_time);
         name = itemView.findViewById(R.id.tv_item_name);
         desc_pic = itemView.findViewById(R.id.iv_item_pic);
+        author_pic = itemView.findViewById(R.id.iv_item_author);
 
     }
 }

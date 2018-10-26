@@ -7,10 +7,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.qin.wanandroid.R;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Create by qindl
@@ -24,7 +23,7 @@ public class HomePageListHolder extends RecyclerView.ViewHolder {
     public TextView time;
     public TextView title;
     public ImageView desc_pic;
-    public CircleImageView head_pic;
+    public RoundedImageView head_pic;
     public LinearLayout ll_author;
     public CardView cardview;
 

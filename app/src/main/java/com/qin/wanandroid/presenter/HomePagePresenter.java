@@ -4,6 +4,7 @@ import com.qin.wanandroid.base.RxPresenter;
 import com.qin.wanandroid.model.DataManager;
 import com.qin.wanandroid.model.bean.home.HomeBanner;
 import com.qin.wanandroid.model.bean.home.HomeMore;
+import com.qin.wanandroid.model.bean.home.ProjectCategory;
 import com.qin.wanandroid.model.bean.home.SecondBanner;
 import com.qin.wanandroid.model.http.CommonSubscriber;
 import com.qin.wanandroid.model.http.response.BaseBlogResponse;
@@ -40,7 +41,7 @@ public class HomePagePresenter extends RxPresenter<HomePageContract.view> implem
                     }
                 }));
 
-        addSubscrible(DataManager.getInstance().getSecondBanner()
+        addSubscrible(DataManager.getInstance().getSecondBanner(id)
         .compose(RxUitl.<SecondBanner>rxSchedulerHelper())
         .subscribeWith(new CommonSubscriber<SecondBanner>(view) {
             @Override
@@ -67,10 +68,37 @@ public class HomePagePresenter extends RxPresenter<HomePageContract.view> implem
                 view.stopShowData(true);
             }
         }));
+
+        addSubscrible(DataManager.getInstance().getProjectCategory()
+        .compose(RxUitl.<ProjectCategory>rxSchedulerHelper())
+        .subscribeWith(new CommonSubscriber<ProjectCategory>(view) {
+            @Override
+            public void onNext(ProjectCategory category) {
+                view.showRefreshCategoryData(category);
+            }
+
+            @Override
+            public void onComplete() {
+                view.stopShowData(true);
+            }
+        }));
     }
 
     @Override
-    public void loadMoreData() {
+    public void loadMoreData(int id) {
 
+        addSubscrible(DataManager.getInstance().getHomeMoreList(id)
+                .compose(RxUitl.<HomeMore>rxSchedulerHelper())
+                .subscribeWith(new CommonSubscriber<HomeMore>(view) {
+                    @Override
+                    public void onNext(HomeMore homeMore) {
+                        view.showLoadMoreData(homeMore);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        view.stopShowData(false);
+                    }
+                }));
     }
 }
